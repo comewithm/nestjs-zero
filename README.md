@@ -347,9 +347,9 @@ nestjs-realworld/
    - `@Injectable()` 装饰器
 
 #### 实践任务
-- [ ] 创建新项目
-- [ ] 实现一个简单的健康检查端点（GET /health）
-- [ ] 创建一个用户列表端点（GET /users），返回硬编码数据
+- [x] 创建新项目
+- [x] 实现一个简单的健康检查端点（GET /health）
+- [x] 创建一个用户列表端点（GET /users），返回硬编码数据
 
 ---
 
@@ -565,7 +565,7 @@ nestjs-realworld/
 5. **对比学习**：将 NestJS 概念与熟悉的前端概念对比
 
 ### 参考资源
-- **官方文档**：https://docs.nestjs.com/
+- **官方文档**：https://docs.nestjs.com/ https://nest.nodejs.cn/controllers
 - **TypeORM 文档**：https://typeorm.io/
 - **RealWorld API 规范**：https://github.com/gothinkster/realworld/tree/main/api
 - **参考项目**：https://github.com/lujakob/nestjs-realworld-example-app
