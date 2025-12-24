@@ -374,9 +374,9 @@ nestjs-realworld/
    - 自定义管道
 
 #### 实践任务
-- [ ] 创建用户注册 DTO，包含 email、username、password 验证
-- [ ] 实现用户注册接口（POST /users），使用 DTO 验证
-- [ ] 创建自定义管道，验证用户名格式
+- [x] 创建用户注册 DTO，包含 email、username、password 验证
+- [x] 实现用户注册接口（POST /register），使用 DTO 验证
+- [x] 创建自定义管道，验证用户名格式
 
 ---
 
