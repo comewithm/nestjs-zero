@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, NotFoundException, Param, ParseIntPipe, Post, Put } from "@nestjs/common";
 import { ArticlesService } from "./articles.service";
 import type {CreateArticleDto, UpdateArticleDto} from './articles.service'
-import { UsersService } from "./users.service";
+import { UsersService } from "../users/users.service";
 import { Article } from "./articles.entity";
 
 

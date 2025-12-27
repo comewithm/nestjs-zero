@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Article } from "./articles.entity";
 import { Repository } from "typeorm";
-import { User } from "./users.entity";
+import { User } from "../users/users.entity";
 
 
 export interface CreateArticleDto {

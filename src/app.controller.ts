@@ -29,9 +29,9 @@ import {
   IsEmpty,
   IsOptional,
 } from 'class-validator';
-import type {CreateUserDto} from './users.service'
-import { UsersService } from './users.service';
-import { User } from './users.entity';
+import type {CreateUserDto} from './users/users.service'
+import { UsersService } from './users/users.service';
+import { User } from './users/users.entity';
 
 class RegisterDto {
   @IsEmail()
@@ -162,47 +162,6 @@ class RangeValidationPipe implements PipeTransform {
 export class AppController {
   constructor(
     private readonly appService: AppService,
-    private readonly usersService: UsersService
   ) {}
 
-  // 添加用户列表端点
-  @Get('users')
-  // @Redirect('https://nest.nodejs.cn/controllers', 301)
-  async getUsers(): Promise<User[]> {
-    return await this.usersService.findAll()
-  }
-
-  @Post('users')
-  async createUser(@Body() createUserDto: CreateUserDto): Promise<User> {
-    return await this.usersService.create(createUserDto)
-  }
-
-  @Put('users/:id')
-  async updateUser(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() updateUserDto: UpdateUserDto,
-  ): Promise<User> {
-    return await this.usersService.update(id, updateUserDto)
-  }
-
-  @Get('users/:id')
-  async findOne(@Param('id', ParseIntPipe) id: number): Promise<User | null> {
-    return await this.usersService.findOne(id)
-  }
-
-  @Post('post')
-  create(@Res() res: Response) {
-    res.status(HttpStatus.CREATED).send('create successful');
-  }
-
-  @Post('register')
-  register(@Body() registerData: RegisterDto) {
-    return {
-      message: '注册成功',
-      user: {
-        email: registerData.email,
-        username: registerData.username,
-      },
-    };
-  }
 }

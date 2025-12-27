@@ -2,11 +2,12 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './users.entity';
-import { UsersService } from './users.service';
-import { Article } from './articles.entity';
-import { ArticlesService } from './articles.service';
-import { ArticlesController } from './articles.controller';
+import { User } from './users/users.entity';
+import { UsersService } from './users/users.service';
+import { Article } from './articles/articles.entity';
+import { ArticlesService } from './articles/articles.service';
+import { ArticlesController } from './articles/articles.controller';
+import { UsersController } from './users/users.controller';
 
 @Module({
   imports: [
@@ -23,7 +24,7 @@ import { ArticlesController } from './articles.controller';
     }), // 数据库配置
     TypeOrmModule.forFeature([User, Article]), // 注册User实体的Repository
   ],
-  controllers: [AppController, ArticlesController],
+  controllers: [AppController, UsersController, ArticlesController],
   providers: [AppService, UsersService, ArticlesService], // 注册 UsersService
 })
 export class AppModule {}
