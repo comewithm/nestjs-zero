@@ -1,40 +1,56 @@
-import { ArgumentMetadata, BadRequestException, Body, Controller, Get, HttpStatus, Param, ParseIntPipe, PipeTransform, Post, Query, Redirect, Req, Res } from '@nestjs/common';
+import {
+  ArgumentMetadata,
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  HttpStatus,
+  Param,
+  ParseIntPipe,
+  PipeTransform,
+  Post,
+  Put,
+  Query,
+  Redirect,
+  Req,
+  Res,
+} from '@nestjs/common';
 import { AppService } from './app.service';
 
-import type {Response} from 'express'
+import type { Response } from 'express';
 
-import {IsEmail, IsNotEmpty, IsString, MinLength, MaxLength, Matches, IsEmpty, IsOptional} from 'class-validator'
-
-
-interface User {
-  id: number
-  username: string
-  email: string
-}
-
-interface CreateUserDto {
-  username: string
-  email: string
-}
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsString,
+  MinLength,
+  MaxLength,
+  Matches,
+  IsEmpty,
+  IsOptional,
+} from 'class-validator';
+import type {CreateUserDto} from './users.service'
+import { UsersService } from './users.service';
+import { User } from './users.entity';
 
 class RegisterDto {
   @IsEmail()
   @IsNotEmpty()
-  email: string
+  email: string;
 
   @IsString()
   @IsNotEmpty()
   @MinLength(3)
   @MaxLength(20)
   @Matches(/^[a-zA-Z_][a-zA-Z0-9_]*$/, {
-    message: '用户名格式不正确: 只能包含字母、数字和下划线，且不能以数字开头'
+    message: '用户名格式不正确: 只能包含字母、数字和下划线，且不能以数字开头',
   })
-  username: string
+  username: string;
 
   @IsString()
   @IsNotEmpty()
   @MinLength(8)
-  password: string
+  password: string;
 }
 
 // 自定义管道：验证用户名格式
@@ -43,16 +59,16 @@ class UsernameValidationPipe implements PipeTransform {
     // valid 是要验证的值（用户名）
     // metadata 包含参数的元数据信息
 
-    if(!value) {
-      return value
+    if (!value) {
+      return value;
     }
 
-    const usernameRegex = /^[a-zA-Z_][a-zA-Z0-9_]*$/
+    const usernameRegex = /^[a-zA-Z_][a-zA-Z0-9_]*$/;
 
-    if(!usernameRegex.test(value)) {
-      throw new BadRequestException('用户名格式不正确')
+    if (!usernameRegex.test(value)) {
+      throw new BadRequestException('用户名格式不正确');
     }
-    return value // 如果验证通过，则返回原始值
+    return value; // 如果验证通过，则返回原始值
   }
 }
 
@@ -60,42 +76,44 @@ class UsernameValidationPipe implements PipeTransform {
 class UpdateUserDto {
   @IsEmail()
   @IsOptional()
-  email: string
+  email: string;
 
   @IsString()
   @IsOptional()
   @MinLength(3)
   @MaxLength(20)
-  username: string
+  username: string;
 
   @IsString()
   @IsOptional()
   @MinLength(8)
-  password: string
+  password: string;
 }
 
 class RangeValidationPipe implements PipeTransform {
   constructor(
     private readonly min: number,
-    private readonly max: number
+    private readonly max: number,
   ) {}
 
   transform(value: any, metadata: ArgumentMetadata) {
-    if(value === undefined || value === null || value === '') {
-      return value
+    if (value === undefined || value === null || value === '') {
+      return value;
     }
 
-    const num = parseInt(value)
+    const num = parseInt(value);
 
-    if(isNaN(num)) {
-      throw new BadRequestException('页码必须是数字')
+    if (isNaN(num)) {
+      throw new BadRequestException('页码必须是数字');
     }
 
-    if(num < this.min || num > this.max) {
-      throw new BadRequestException(`页码范围必须在 ${this.min} 到 ${this.max} 之间`)
+    if (num < this.min || num > this.max) {
+      throw new BadRequestException(
+        `页码范围必须在 ${this.min} 到 ${this.max} 之间`,
+      );
     }
 
-    return num
+    return num;
   }
 }
 
@@ -140,80 +158,41 @@ class RangeValidationPipe implements PipeTransform {
   不能直接用于 DTO 字段（需要通过参数装饰器）
  */
 
-@Controller("")
+@Controller('')
 export class AppController {
-  constructor(private readonly appService: AppService) {}
-
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
-  }
-
-  @Get('health')
-  getHealth(): {status: string; timestamp: string} {
-    return {
-      status: 'ok',
-      timestamp: new Date().toISOString()
-    }
-  }
+  constructor(
+    private readonly appService: AppService,
+    private readonly usersService: UsersService
+  ) {}
 
   // 添加用户列表端点
   @Get('users')
   // @Redirect('https://nest.nodejs.cn/controllers', 301)
-  getUsers(
-    @Query('name', UsernameValidationPipe) name: string, 
-    @Query('age', ParseIntPipe) age: number
-  ): User[] {
-    // 完整路径应该是 /users
-    console.log('request name:', name, 'age:', age)
-    return [
-      {id: 1, username: 'alice', email: 'alice@example.com'},
-      {id: 2, username: 'bob', email: 'bob@example.com'},
-    ]
+  async getUsers(): Promise<User[]> {
+    return await this.usersService.findAll()
   }
 
-  @Get("users2")
-  getUsers2(
-    @Query('page', new RangeValidationPipe(1, 100)) page: number
-  ) {
-    return {
-      message: '获取用户列表',
-      page: page,
-      data: [
-        {id: 1, username: 'alice', email: 'alice@example.com'},
-        {id: 2, username: 'bob', email: 'bob@example.com'},
-      ]
-    }
+  @Post('users')
+  async createUser(@Body() createUserDto: CreateUserDto): Promise<User> {
+    return await this.usersService.create(createUserDto)
   }
 
-  @Post('users/:id')
-  updateUser(@Param('id', ParseIntPipe) id: number, @Body() updateUserDto: UpdateUserDto) {
-    console.log('updateUserDto:', updateUserDto)
-    return {
-      message: '用户更新成功',
-      user: {
-        id: id,
-        user: updateUserDto
-      }
-    }
+  @Put('users/:id')
+  async updateUser(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateUserDto: UpdateUserDto,
+  ): Promise<User> {
+    return await this.usersService.update(id, updateUserDto)
   }
 
   @Get('users/:id')
   findOne(@Param('id') id: string) {
-    return `获取用户 ${id}`
+    return `获取用户 ${id}`;
   }
 
-  @Post("users")
-  createUser(@Body() userData: CreateUserDto): User {
-    return {
-      id: Date.now(),
-      ...userData
-    }
-  }
-
-  @Post("post")
+  @Post('post')
   create(@Res() res: Response) {
-    res.status(HttpStatus.CREATED).send("create successful")
+    res.status(HttpStatus.CREATED).send('create successful');
   }
 
   @Post('register')
@@ -222,8 +201,8 @@ export class AppController {
       message: '注册成功',
       user: {
         email: registerData.email,
-        username: registerData.username
-      }
-    }
+        username: registerData.username,
+      },
+    };
   }
 }
