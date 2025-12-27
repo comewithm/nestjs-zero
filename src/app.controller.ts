@@ -186,8 +186,8 @@ export class AppController {
   }
 
   @Get('users/:id')
-  findOne(@Param('id') id: string) {
-    return `获取用户 ${id}`;
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<User | null> {
+    return await this.usersService.findOne(id)
   }
 
   @Post('post')

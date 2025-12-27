@@ -1,4 +1,5 @@
-import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, Index, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Article } from './articles.entity';
 
 @Entity('users')
 export class User {
@@ -37,4 +38,7 @@ export class User {
     nullable: true
   })
   image: string | null;
+
+  @OneToMany(() => Article, (article) => article.author)
+  articles: Article[]
 }
