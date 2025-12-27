@@ -1,4 +1,10 @@
-import { Column, Entity, Index, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Article } from '../articles/articles.entity';
 
 @Entity('users')
@@ -9,36 +15,36 @@ export class User {
   @Column({
     type: 'varchar',
     length: 255,
-    unique: true
+    unique: true,
   }) // 普通列
   email: string;
 
   @Column({
     type: 'varchar',
     length: 50,
-    unique: true
+    unique: true,
   })
   username: string;
 
   @Column({
     type: 'varchar',
-    length: 255
+    length: 255,
   })
   password: string;
 
   @Column({
     type: 'text',
-    nullable: true
+    nullable: true,
   })
   bio: string | null;
 
   @Column({
     type: 'varchar',
     length: 500,
-    nullable: true
+    nullable: true,
   })
   image: string | null;
 
   @OneToMany(() => Article, (article) => article.author)
-  articles: Article[]
+  articles: Article[];
 }

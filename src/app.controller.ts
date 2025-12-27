@@ -29,7 +29,7 @@ import {
   IsEmpty,
   IsOptional,
 } from 'class-validator';
-import type {CreateUserDto} from './users/users.service'
+import type { CreateUserDto } from './users/users.service';
 import { UsersService } from './users/users.service';
 import { User } from './users/users.entity';
 
@@ -160,8 +160,5 @@ class RangeValidationPipe implements PipeTransform {
 
 @Controller('')
 export class AppController {
-  constructor(
-    private readonly appService: AppService,
-  ) {}
-
+  constructor(private readonly appService: AppService) {}
 }
