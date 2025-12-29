@@ -1,23 +1,10 @@
 import {
   ArgumentMetadata,
   BadRequestException,
-  Body,
   Controller,
-  Get,
-  HttpStatus,
-  Param,
-  ParseIntPipe,
   PipeTransform,
-  Post,
-  Put,
-  Query,
-  Redirect,
-  Req,
-  Res,
 } from '@nestjs/common';
 import { AppService } from './app.service';
-
-import type { Response } from 'express';
 
 import {
   IsEmail,
@@ -29,9 +16,6 @@ import {
   IsEmpty,
   IsOptional,
 } from 'class-validator';
-import type { CreateUserDto } from './users/users.service';
-import { UsersService } from './users/users.service';
-import { User } from './users/users.entity';
 
 class RegisterDto {
   @IsEmail()

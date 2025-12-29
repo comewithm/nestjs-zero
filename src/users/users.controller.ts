@@ -1,8 +1,9 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
-  Injectable,
+  NotFoundException,
   Param,
   ParseIntPipe,
   Post,
@@ -24,7 +25,13 @@ export class UsersController {
 
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: number): Promise<User | null> {
-    return await this.usersService.findOne(id);
+    const user = await this.usersService.findOne(id);
+
+    if(!user) {
+        throw new NotFoundException('User not found')
+    }
+
+    return user
   }
 
   @Post()
@@ -38,5 +45,15 @@ export class UsersController {
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<User> {
     return await this.usersService.update(id, updateUserDto);
+  }
+
+  @Delete(":id")
+  async remove(
+    @Param('id', ParseIntPipe) id: number
+  ): Promise<{message: string}> {
+    await this.usersService.remove(id)
+    return {
+        message: 'User deleted successfully'
+    }
   }
 }

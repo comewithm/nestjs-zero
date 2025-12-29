@@ -402,10 +402,10 @@ nestjs-realworld/
    - 事务处理
 
 #### 实践任务
-- [ ] 配置数据库连接
-- [ ] 创建 User 实体，包含 id、email、username、password、bio、image 字段
-- [ ] 实现用户的增删改查操作
-- [ ] 创建 Article 实体，建立与 User 的关系（作者关系）
+- [x] 配置数据库连接
+- [x] 创建 User 实体，包含 id、email、username、password、bio、image 字段
+- [x] 实现用户的增删改查操作
+- [x] 创建 Article 实体，建立与 User 的关系（作者关系）
 
 ---
 
