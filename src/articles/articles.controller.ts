@@ -16,6 +16,8 @@ import type { CreateArticleDto, UpdateArticleDto } from './articles.service';
 import { UsersService } from '../users/users.service';
 import { Article } from './articles.entity';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
+import { User } from 'src/users/users.entity';
 
 @Controller('articles')
 export class ArticlesController {
@@ -27,11 +29,8 @@ export class ArticlesController {
   // 创建文章
   @Post()
   @UseGuards(JwtAuthGuard) // 应用认证守卫
-  async create(@Body() createArticleDto: any, @Req() req: any): Promise<Article> {
+  async create(@Body() createArticleDto: any, @CurrentUser() author: User): Promise<Article> {
     // 注意：现在需要从req.user获取当前登录用户
-    // 但更好的方式是使用自定义装饰器(下一步会实现)
-    const author = req.user;
-
     if (!author) {
       throw new NotFoundException('Author not found');
     }

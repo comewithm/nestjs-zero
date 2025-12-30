@@ -1,7 +1,10 @@
-import { Body, Controller, Post } from "@nestjs/common";
+import { Body, Controller, Get, Post, UseGuards } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { RegisterDto } from "./dto/register.dto";
 import { LoginDto } from "./dto/login.dto";
+import { JwtAuthGuard } from "./guards/jwt-auth.guard";
+import { CurrentUser } from "./decorators/current-user.decorator";
+import { User } from "src/users/users.entity";
 
 
 @Controller('auth')
@@ -21,9 +24,20 @@ export class AuthController {
 
     @Post('login')
     async login(@Body() loginDto: LoginDto) {
-        // 1.密码未验证
-        // 2.没有返回jwt token
-        // 3.无法用于后续的认证
         return await this.authService.login(loginDto)
+    }
+
+    @Get('me')
+    @UseGuards(JwtAuthGuard)
+    getProfile(@CurrentUser() user: User) {
+        return {
+            user: {
+                id: user.id,
+                email: user.email,
+                username: user.username,
+                bio: user.bio,
+                image: user.image
+            }
+        }
     }
 }
