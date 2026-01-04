@@ -27,11 +27,11 @@ export class UsersController {
   async findOne(@Param('id', ParseIntPipe) id: number): Promise<User | null> {
     const user = await this.usersService.findOne(id);
 
-    if(!user) {
-        throw new NotFoundException('User not found')
+    if (!user) {
+      throw new NotFoundException('User not found');
     }
 
-    return user
+    return user;
   }
 
   @Post()
@@ -47,13 +47,13 @@ export class UsersController {
     return await this.usersService.update(id, updateUserDto);
   }
 
-  @Delete(":id")
+  @Delete(':id')
   async remove(
-    @Param('id', ParseIntPipe) id: number
-  ): Promise<{message: string}> {
-    await this.usersService.remove(id)
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<{ message: string }> {
+    await this.usersService.remove(id);
     return {
-        message: 'User deleted successfully'
-    }
+      message: 'User deleted successfully',
+    };
   }
 }

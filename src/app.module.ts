@@ -24,7 +24,7 @@ import { AuthModule } from './auth/auth.module';
       // entities: [User], //手动指定实体 自动更方便
     }), // 数据库配置
     TypeOrmModule.forFeature([User, Article]), // 注册User实体的Repository
-    AuthModule
+    AuthModule,
   ],
   controllers: [AppController, UsersController, ArticlesController],
   providers: [AppService, UsersService, ArticlesService], // 注册 UsersService
