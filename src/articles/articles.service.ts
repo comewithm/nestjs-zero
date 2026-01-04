@@ -52,6 +52,13 @@ export class ArticlesService {
     });
   }
 
+  async findBySlug(slug: string): Promise<Article | null> {
+    return await this.articleRepository.findOne({
+      where: { slug },
+      relations: ['author'],
+    });
+  }
+
   // 更新文章
   async update(
     id: number,

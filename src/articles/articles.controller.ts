@@ -29,7 +29,10 @@ export class ArticlesController {
   // 创建文章
   @Post()
   @UseGuards(JwtAuthGuard) // 应用认证守卫
-  async create(@Body() createArticleDto: any, @CurrentUser() author: User): Promise<Article> {
+  async create(
+    @Body() createArticleDto: any,
+    @CurrentUser() author: User,
+  ): Promise<Article> {
     // 注意：现在需要从req.user获取当前登录用户
     if (!author) {
       throw new NotFoundException('Author not found');
@@ -43,9 +46,9 @@ export class ArticlesController {
     return await this.articlesServices.findAll();
   }
 
-  @Get(':id')
-  async findOne(@Param('id', ParseIntPipe) id: number): Promise<Article> {
-    const article = await this.articlesServices.findOne(id);
+  @Get(':slug')
+  async findOne(@Param('slug') slug: string): Promise<Article> {
+    const article = await this.articlesServices.findBySlug(slug);
 
     if (!article) {
       throw new NotFoundException('Article not found');
@@ -54,19 +57,32 @@ export class ArticlesController {
     return article;
   }
 
-  @Put(':id')
+  @Put(':slug')
+  @UseGuards(JwtAuthGuard)
   async update(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('slug') slug: string,
     @Body() updateArticleDto: UpdateArticleDto,
   ): Promise<Article> {
-    return await this.articlesServices.update(id, updateArticleDto);
+    // 先根据slug查找文章
+    const article = await this.articlesServices.findBySlug(slug);
+
+    if (!article) {
+      throw new NotFoundException('Article not found');
+    }
+
+    return await this.articlesServices.update(article.id, updateArticleDto);
   }
 
-  @Delete(':id')
-  async remove(
-    @Param('id', ParseIntPipe) id: number,
-  ): Promise<{ message: string }> {
-    await this.articlesServices.remove(id);
+  @Delete(':slug')
+  @UseGuards(JwtAuthGuard)
+  async remove(@Param('slug') slug: string): Promise<{ message: string }> {
+    const article = await this.articlesServices.findBySlug(slug);
+
+    if (!article) {
+      throw new NotFoundException('Article not found');
+    }
+
+    await this.articlesServices.remove(article.id);
     return {
       message: 'Article deleted successfully',
     };

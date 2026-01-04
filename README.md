@@ -429,11 +429,11 @@ nestjs-realworld/
    - 密码验证
 
 #### 实践任务
-- [ ] 安装和配置 @nestjs/jwt、@nestjs/passport
-- [ ] 实现用户注册接口（密码加密）
-- [ ] 实现用户登录接口（返回 JWT Token）
-- [ ] 创建 JWT 认证守卫
-- [ ] 保护需要认证的接口（如创建文章）
+- [x] 安装和配置 @nestjs/jwt、@nestjs/passport
+- [x] 实现用户注册接口（密码加密）
+- [x] 实现用户登录接口（返回 JWT Token）
+- [x] 创建 JWT 认证守卫
+- [x] 保护需要认证的接口（如创建文章）
 
 ---
 
