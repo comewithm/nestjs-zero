@@ -2,6 +2,8 @@ import {
   Column,
   Entity,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -35,4 +37,18 @@ export class Article {
     onUpdate: 'CURRENT_TIMESTAMP',
   })
   updatedAt: Date;
+
+  @ManyToMany(() => User, (user) => user.favoritedArticles)
+  @JoinTable({
+    name: 'article_favorites', // 中间表名称
+    joinColumn: {
+      name: 'articleId',
+      referencedColumnName: 'id',
+    }, // 当前表的外键
+    inverseJoinColumn: {
+      name: 'userId',
+      referencedColumnName: 'id',
+    }, // 关联表的外键
+  })
+  favoritedBy: User[];
 }

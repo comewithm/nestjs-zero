@@ -5,10 +5,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './users/users.entity';
 import { UsersService } from './users/users.service';
 import { Article } from './articles/articles.entity';
-import { ArticlesService } from './articles/articles.service';
-import { ArticlesController } from './articles/articles.controller';
 import { UsersController } from './users/users.controller';
 import { AuthModule } from './auth/auth.module';
+import { ArticlesModule } from './articles/articles.module';
 
 @Module({
   imports: [
@@ -25,8 +24,9 @@ import { AuthModule } from './auth/auth.module';
     }), // 数据库配置
     TypeOrmModule.forFeature([User, Article]), // 注册User实体的Repository
     AuthModule,
+    ArticlesModule,
   ],
-  controllers: [AppController, UsersController, ArticlesController],
-  providers: [AppService, UsersService, ArticlesService], // 注册 UsersService
+  controllers: [AppController, UsersController],
+  providers: [AppService, UsersService], // 注册 UsersService
 })
 export class AppModule {}

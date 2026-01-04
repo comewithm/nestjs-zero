@@ -1,4 +1,10 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToMany,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Article } from '../articles/articles.entity';
 
 @Entity('users')
@@ -41,4 +47,8 @@ export class User {
 
   @OneToMany(() => Article, (article) => article.author)
   articles: Article[];
+
+  // 点赞的文章 多对多
+  @ManyToMany(() => Article, (article) => article.favoritedBy)
+  favoritedArticles: Article[];
 }
