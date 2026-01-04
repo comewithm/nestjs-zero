@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Article } from './articles.entity';
 import { Repository } from 'typeorm';
 import { User } from '../users/users.entity';
+import { QueryArticlesDto } from './dto/query-articles.dto';
 
 export interface CreateArticleDto {
   title: string;
@@ -38,10 +39,39 @@ export class ArticlesService {
   }
 
   // 查询所有文章(包含作者信息)
-  async findAll(): Promise<Article[]> {
-    return await this.articleRepository.find({
-      relations: ['author'], // 加载关联的作者信息
-    });
+  async findAll(queryDto: QueryArticlesDto) {
+    const {
+      limit = 20,
+      offset = 0,
+      author,
+      orderBy = 'createdAt',
+      order = 'DESC',
+    } = queryDto;
+
+    // 创建查询构建器
+    const queryBuilder = this.articleRepository
+      .createQueryBuilder('article')
+      .leftJoinAndSelect('article.author', 'author'); // 关联作者信息
+
+    if (author) {
+      queryBuilder.where('author.username = :username', { username: author });
+    }
+
+    // 排序
+    queryBuilder.orderBy(`article.${orderBy}`, order);
+
+    // 分页
+    queryBuilder.skip(offset).take(limit);
+
+    // 执行查询
+    const [articles, total] = await queryBuilder.getManyAndCount();
+
+    return {
+      articles,
+      total,
+      limit,
+      offset,
+    };
   }
 
   // 根据ID查找文章(包含作者信息)

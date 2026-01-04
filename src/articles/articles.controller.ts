@@ -8,6 +8,7 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -18,6 +19,7 @@ import { Article } from './articles.entity';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import { User } from 'src/users/users.entity';
+import { QueryArticlesDto } from './dto/query-articles.dto';
 
 @Controller('articles')
 export class ArticlesController {
@@ -42,8 +44,8 @@ export class ArticlesController {
   }
 
   @Get()
-  async findAll(): Promise<Article[]> {
-    return await this.articlesServices.findAll();
+  async findAll(@Query() queryDto: QueryArticlesDto) {
+    return await this.articlesServices.findAll(queryDto);
   }
 
   @Get(':slug')
