@@ -4,12 +4,14 @@ import { Article } from './articles.entity';
 import { Repository } from 'typeorm';
 import { User } from '../users/users.entity';
 import { QueryArticlesDto } from './dto/query-articles.dto';
+import { TagService } from 'src/tags/tags.service';
 
 export interface CreateArticleDto {
   title: string;
   body: string;
   slug: string;
   authorId: number;
+  tagList?: string[];
 }
 
 export interface UpdateArticleDto {
@@ -25,6 +27,7 @@ export class ArticlesService {
     private readonly articleRepository: Repository<Article>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    private readonly tagService: TagService,
   ) {}
 
   // 创建文章
@@ -37,6 +40,14 @@ export class ArticlesService {
       author,
     });
 
+    // 如果有标签，则添加标签
+    if (createArticleDto.tagList && createArticleDto.tagList.length > 0) {
+      const tags = await this.tagService.findOrCreateMany(
+        createArticleDto.tagList,
+      );
+      article.tags = tags;
+    }
+
     return await this.articleRepository.save(article);
   }
 
@@ -46,6 +57,7 @@ export class ArticlesService {
       limit = 20,
       offset = 0,
       author,
+      tag,
       orderBy = 'createdAt',
       order = 'DESC',
     } = queryDto;
@@ -54,10 +66,20 @@ export class ArticlesService {
     const queryBuilder = this.articleRepository
       .createQueryBuilder('article')
       .leftJoinAndSelect('article.author', 'author') // 关联作者信息
-      .leftJoinAndSelect('article.favoritedBy', 'favoritedBy'); // 加载点赞用户
+      .leftJoinAndSelect('article.favoritedBy', 'favoritedBy') // 加载点赞用户
+      .leftJoinAndSelect('article.tags', 'tags'); // 加载标签信息
 
     if (author) {
       queryBuilder.where('author.username = :username', { username: author });
+    }
+
+    if (tag) {
+      // 如果已经有where条件，使用andWhere; 否则使用where
+      if (author) {
+        queryBuilder.andWhere('tags.name = :tagName', { tagName: tag });
+      } else {
+        queryBuilder.where('tags.name = :tagName', { tagName: tag });
+      }
     }
 
     // 排序
@@ -88,7 +110,7 @@ export class ArticlesService {
   async findBySlug(slug: string): Promise<Article | null> {
     return await this.articleRepository.findOne({
       where: { slug },
-      relations: ['author', 'favoritedBy'], // 加载作者和点赞用户
+      relations: ['author', 'favoritedBy', 'tags'], // 加载作者和点赞用户
     });
   }
 
@@ -159,6 +181,54 @@ export class ArticlesService {
     }
 
     article.favoritedBy = article.favoritedBy.filter((u) => u.id !== userId);
+    return await this.articleRepository.save(article);
+  }
+
+  async addTagToArticle(articleId: number, tagName: string): Promise<Article> {
+    // 1.查找文章
+    const article = await this.articleRepository.findOne({
+      where: { id: articleId },
+      relations: ['tags'],
+    });
+
+    if (!article) {
+      throw new Error('Article not found');
+    }
+
+    // 2.查找或创建标签
+    const tag = await this.tagService.findOrCreate(tagName);
+
+    // 3.检查标签中是否已经存在
+    const tagExists = article.tags.some((t) => t.id === tag.id);
+
+    if (tagExists) {
+      return article;
+    }
+
+    // 4.添加标签
+    article.tags.push(tag);
+    return await this.articleRepository.save(article);
+  }
+
+  async removeTagFromArticle(
+    articleId: number,
+    tagName: string,
+  ): Promise<Article> {
+    // 1.查找文章
+    const article = await this.articleRepository.findOne({
+      where: { id: articleId },
+      relations: ['tags'],
+    });
+
+    if (!article) {
+      throw new Error('Article not found');
+    }
+
+    // 2.查找或创建标签
+    const tag = await this.tagService.findOrCreate(tagName);
+
+    // 3.过滤
+    article.tags = article.tags.filter((t) => t.id !== tag.id);
     return await this.articleRepository.save(article);
   }
 }

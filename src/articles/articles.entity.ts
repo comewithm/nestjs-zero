@@ -8,6 +8,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { User } from '../users/users.entity';
+import { Tag } from 'src/tags/tags.entity';
 
 @Entity('articles')
 export class Article {
@@ -51,4 +52,19 @@ export class Article {
     }, // 关联表的外键
   })
   favoritedBy: User[];
+
+  // 标签关系，多对多
+  @ManyToMany(() => Tag, (tag) => tag.articles)
+  @JoinTable({
+    name: 'articles_tags', // 中间表名称
+    joinColumn: {
+      name: 'articleId',
+      referencedColumnName: 'id',
+    }, // 当前表Article的外键
+    inverseJoinColumn: {
+      name: 'tagId',
+      referencedColumnName: 'id',
+    }, // 关联表Tag的外键
+  })
+  tags: Tag[];
 }
