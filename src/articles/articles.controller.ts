@@ -125,17 +125,17 @@ export class ArticlesController {
   async addTagToArticle(
     @Param('slug') slug: string,
     @Body('tag') tagName: string,
-    @CurrentUser() user: User
+    @CurrentUser() user: User,
   ): Promise<Article> {
     // 1.根据slug查找文章
-    const article = await this.articlesServices.findBySlug(slug)
+    const article = await this.articlesServices.findBySlug(slug);
 
-    if(!article) {
-      throw new NotFoundException('Article not found')
+    if (!article) {
+      throw new NotFoundException('Article not found');
     }
 
     // 2.给文章添加标签
-    return await this.articlesServices.addTagToArticle(article.id, tagName)
+    return await this.articlesServices.addTagToArticle(article.id, tagName);
   }
 
   // 移除文章标签
@@ -143,15 +143,18 @@ export class ArticlesController {
   async removeTagFromArticle(
     @Param('slug') slug: string,
     @Param('tagName') tagName: string,
-    @CurrentUser() user: User
+    @CurrentUser() user: User,
   ): Promise<Article> {
     // 1.根据slug查找文章
-    const article = await this.articlesServices.findBySlug(slug)
+    const article = await this.articlesServices.findBySlug(slug);
 
-    if(!article) {
-      throw new NotFoundException('Article not found')
+    if (!article) {
+      throw new NotFoundException('Article not found');
     }
 
-    return await this.articlesServices.removeTagFromArticle(article.id, tagName)
+    return await this.articlesServices.removeTagFromArticle(
+      article.id,
+      tagName,
+    );
   }
 }

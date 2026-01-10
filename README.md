@@ -456,12 +456,12 @@ nestjs-realworld/
    - 文章与用户的点赞关系
 
 #### 实践任务
-- [ ] 实现创建文章接口（POST /articles）
-- [ ] 实现获取文章列表接口（GET /articles），支持分页和过滤
-- [ ] 实现获取单篇文章接口（GET /articles/:slug）
-- [ ] 实现更新文章接口（PUT /articles/:slug）
-- [ ] 实现删除文章接口（DELETE /articles/:slug）
-- [ ] 实现文章点赞功能（POST /articles/:slug/favorite）
+- [x] 实现创建文章接口（POST /articles）
+- [x] 实现获取文章列表接口（GET /articles），支持分页和过滤
+- [x] 实现获取单篇文章接口（GET /articles/:slug）
+- [x] 实现更新文章接口（PUT /articles/:slug）
+- [x] 实现删除文章接口（DELETE /articles/:slug）
+- [x] 实现文章点赞功能（POST /articles/:slug/favorite）
 
 ---
 
