@@ -1,4 +1,4 @@
-import { Article } from 'src/articles/articles.entity';
+import { Article } from '../articles/articles.entity';
 import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('tags')
