@@ -8,6 +8,7 @@ import { Article } from './articles/articles.entity';
 import { UsersController } from './users/users.controller';
 import { AuthModule } from './auth/auth.module';
 import { ArticlesModule } from './articles/articles.module';
+import { ProfileModule } from './profiles/profiles.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { ArticlesModule } from './articles/articles.module';
     TypeOrmModule.forFeature([User, Article]), // 注册User实体的Repository
     AuthModule,
     ArticlesModule,
+    ProfileModule,
   ],
   controllers: [AppController, UsersController],
   providers: [AppService, UsersService], // 注册 UsersService
