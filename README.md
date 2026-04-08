@@ -489,11 +489,11 @@ nestjs-realworld/
    - E2E 测试
 
 #### 实践任务
-- [ ] 创建响应拦截器，统一响应格式
-- [ ] 创建全局异常过滤器，统一错误处理
-- [ ] 配置 Swagger，生成 API 文档
-- [ ] 为 UserService 编写单元测试
-- [ ] 编写用户注册接口的 E2E 测试
+- [x] 创建响应拦截器，统一响应格式
+- [x] 创建全局异常过滤器，统一错误处理
+- [x] 配置 Swagger，生成 API 文档
+- [x] 为 UserService 编写单元测试
+- [x] 编写用户注册接口的 E2E 测试
 
 ---
 
@@ -514,9 +514,9 @@ nestjs-realworld/
    - 错误处理完善
 
 #### 实践任务
-- [ ] 实现获取用户资料接口（GET /profiles/:username）
-- [ ] 实现关注用户接口（POST /profiles/:username/follow）
-- [ ] 实现取消关注接口（DELETE /profiles/:username/follow）
+- [x] 实现获取用户资料接口（GET /profiles/:username）
+- [x] 实现关注用户接口（POST /profiles/:username/follow）
+- [x] 实现取消关注接口（DELETE /profiles/:username/follow）
 - [ ] 代码重构和优化
 - [ ] 完善错误处理和日志记录
 
