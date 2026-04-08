@@ -10,6 +10,7 @@ import { ProfilesService } from './profiles.service';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import { User } from 'src/users/users.entity';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { OptionalJwtAuthGuard } from 'src/auth/guards/optional-jwt-auth.guard';
 
 @Controller('profiles')
 export class ProfilesController {
@@ -17,17 +18,29 @@ export class ProfilesController {
 
   // 获取用户资料
   @Get(':username')
+  @UseGuards(OptionalJwtAuthGuard)
   async getProfile(
     @Param('username') username: string,
+    @CurrentUser() currentUser?: User,
   ): Promise<{ profile: any }> {
     const user = await this.profileService.findByUsername(username);
+
+    // 判断是否关注
+    let following = false;
+
+    if (currentUser) {
+      following = await this.profileService.isFollowing(
+        currentUser.id,
+        username,
+      );
+    }
 
     return {
       profile: {
         username: user.username,
         bio: user.bio,
         image: user.image,
-        following: false, // TODO: 需要根据当前登录用户判断
+        following, // 根据当前用户判断
       },
     };
   }
