@@ -9,19 +9,26 @@ import { UsersController } from './users/users.controller';
 import { AuthModule } from './auth/auth.module';
 import { ArticlesModule } from './articles/articles.module';
 import { ProfileModule } from './profiles/profiles.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: '',
-      database: 'nestjs_realworld',
-      autoLoadEntities: true,
-      synchronize: true, // 开发环境：自动同步数据库结构（生产环境要设为 false）
-      // entities: [User], //手动指定实体 自动更方便
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env'
+    }),
+    TypeOrmModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        type: 'mysql',
+        host: config.get<string>('DB_HOST', 'localhost'),
+        port: config.get<number>('DB_PORT', 3306),
+        username: config.get<string>('DB_USERNAME', 'root'),
+        password: config.get<string>('DB_PASSWORD', ''),
+        database: config.get<string>('DB_DATABASE', 'nestjs_realworld'),
+        autoLoadEntities: true,
+        synchronize: config.get<string>('DB_SYNC', 'true') === 'true', // 开发环境：自动同步数据库结构（生产环境要设为 false）
+      })
     }), // 数据库配置
     TypeOrmModule.forFeature([User, Article]), // 注册User实体的Repository
     AuthModule,

@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -9,6 +10,9 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class ProfilesService {
+
+  private readonly logger = new Logger(ProfilesService.name)
+
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
@@ -21,7 +25,7 @@ export class ProfilesService {
   ): Promise<User> {
     const user = await this.userRepository.findOne({
       where: { username },
-      relations: ['articles'], // 加载用户的文章
+      // relations: ['articles'], // 加载用户的文章
     });
 
     if (!user) {
@@ -73,6 +77,8 @@ export class ProfilesService {
     follower.following.push(followingUser);
     await this.userRepository.save(follower);
 
+    this.logger.log(`User ${followerId} followed ${followingUsername}`)
+
     return followingUser;
   }
 
@@ -110,6 +116,8 @@ export class ProfilesService {
       (u) => u.id !== followingUser.id,
     );
     await this.userRepository.save(follower);
+
+    this.logger.log(`User ${followerId} unfollowed ${followingUsername}`)
 
     return followingUser;
   }

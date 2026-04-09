@@ -6,13 +6,19 @@ import { User } from 'src/users/users.entity';
 import { UsersService } from 'src/users/users.service';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([User]), // 注册User实体的Repository
-    JwtModule.register({
-      secret: 'your-secret-key-here', // 暂时硬编码，后续会优化为环境变量
-      signOptions: { expiresIn: '7d' }, // Token 7天后过期
+    JwtModule.registerAsync({
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        secret: config.get<string>('JWT_SECRET'),
+        signOptions: {
+          expiresIn: config.get('JWT_EXPIRES_IN'),
+        }
+      })
     }),
   ],
   controllers: [AuthController],
