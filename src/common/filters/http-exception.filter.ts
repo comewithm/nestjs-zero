@@ -6,15 +6,7 @@ import {
 } from '@nestjs/common';
 
 import { Request, Response } from 'express';
-
-export class ErrorResponse {
-  success: false;
-  data: null;
-  message: string | string[];
-  statusCode: number;
-  timestamp: string;
-  path: string;
-}
+import { ErrorResponse } from './error-response.interface';
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -42,6 +34,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       statusCode: status,
       timestamp: new Date().toISOString(),
       path: request.url,
+      errorCode: exception.code,
     };
 
     response.status(status).json(errorResponse);

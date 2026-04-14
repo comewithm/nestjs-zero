@@ -51,7 +51,7 @@ describe('UserService', () => {
         articles: [],
         favoritedArticles: [],
         following: [],
-        followers: []
+        followers: [],
       } as User;
 
       // Mock Repository 的 findOne 方法
@@ -100,7 +100,7 @@ describe('UserService', () => {
         articles: [],
         favoritedArticles: [],
         following: [],
-        followers: []
+        followers: [],
       } as User;
 
       // Mock repository 方法

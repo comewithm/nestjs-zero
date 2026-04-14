@@ -16,7 +16,7 @@ import { LoggerMiddleware } from './common/middleware/logger.middleware';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '.env'
+      envFilePath: '.env',
     }),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
@@ -29,7 +29,7 @@ import { LoggerMiddleware } from './common/middleware/logger.middleware';
         database: config.get<string>('DB_DATABASE', 'nestjs_realworld'),
         autoLoadEntities: true,
         synchronize: config.get<string>('DB_SYNC', 'true') === 'true', // 开发环境：自动同步数据库结构（生产环境要设为 false）
-      })
+      }),
     }), // 数据库配置
     TypeOrmModule.forFeature([User, Article]), // 注册User实体的Repository
     AuthModule,
@@ -41,9 +41,6 @@ import { LoggerMiddleware } from './common/middleware/logger.middleware';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(LoggerMiddleware)
-      .exclude('api', 'api/(.*)')
-      .forRoutes('*')
+    consumer.apply(LoggerMiddleware).exclude('api', 'api/(.*)').forRoutes('*');
   }
 }

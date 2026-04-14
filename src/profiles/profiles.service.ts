@@ -10,8 +10,7 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class ProfilesService {
-
-  private readonly logger = new Logger(ProfilesService.name)
+  private readonly logger = new Logger(ProfilesService.name);
 
   constructor(
     @InjectRepository(User)
@@ -77,7 +76,7 @@ export class ProfilesService {
     follower.following.push(followingUser);
     await this.userRepository.save(follower);
 
-    this.logger.log(`User ${followerId} followed ${followingUsername}`)
+    this.logger.log(`User ${followerId} followed ${followingUsername}`);
 
     return followingUser;
   }
@@ -117,7 +116,7 @@ export class ProfilesService {
     );
     await this.userRepository.save(follower);
 
-    this.logger.log(`User ${followerId} unfollowed ${followingUsername}`)
+    this.logger.log(`User ${followerId} unfollowed ${followingUsername}`);
 
     return followingUser;
   }

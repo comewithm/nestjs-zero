@@ -154,23 +154,23 @@ export class AppController {
     return {
       step: 'low',
       username,
-      note: '已绑定 UsernameValidationPipe'
-    }
+      note: '已绑定 UsernameValidationPipe',
+    };
   }
 
   @Get('learn/pipes/page')
   queryParams(
-    @Query('page', new RangeValidationPipe(1, 100)) page: number | undefined
+    @Query('page', new RangeValidationPipe(1, 100)) page: number | undefined,
   ) {
     return {
       step: 'page',
       page,
-      note: '已绑定 RangeValidationPipe'
-    }
+      note: '已绑定 RangeValidationPipe',
+    };
   }
 
   @Get('learn/errors/raw')
   demoRawError() {
-    throw new Error('非 Http 异常错误')
+    throw new Error('非 Http 异常错误');
   }
 }
