@@ -11,6 +11,7 @@ import { ArticlesModule } from './articles/articles.module';
 import { ProfileModule } from './profiles/profiles.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
+import { LearnController } from './learn/learn.controller';
 
 @Module({
   imports: [
@@ -36,7 +37,7 @@ import { LoggerMiddleware } from './common/middleware/logger.middleware';
     ArticlesModule,
     ProfileModule,
   ],
-  controllers: [AppController, UsersController],
+  controllers: [AppController, UsersController, LearnController],
   providers: [AppService, UsersService], // 注册 UsersService
 })
 export class AppModule implements NestModule {
