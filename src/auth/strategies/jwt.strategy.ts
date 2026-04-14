@@ -5,6 +5,8 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { User } from 'src/users/users.entity';
 import { UsersService } from 'src/users/users.service';
 
+export type AuthUser = Pick<User, 'id' | 'email' | 'username' | 'role'>;
+
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
@@ -21,7 +23,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   // 该方法会在Token验证成功后调用
   // payload是在login方法中设置的 payload（包含 sub 和 email）
-  async validate(payload: any): Promise<User> {
+  async validate(payload: any): Promise<AuthUser> {
     const user = await this.usersService.findOne(payload?.sub);
 
     if (!user) {
@@ -29,6 +31,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     }
 
     // 返回的用户会被附加到 request.user 上
-    return user;
+    return {
+      id: user.id,
+      email: user.email,
+      username: user.username,
+      role: payload.role ?? user.role,
+    };
   }
 }

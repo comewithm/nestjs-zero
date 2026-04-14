@@ -70,6 +70,8 @@ export class AuthService {
     const payload = {
       sub: user.id,
       email: user.email,
+      username: user.username,
+      role: user.role ?? 'user',
     }; // sub是jwt标准中的 subject（用户ID）
 
     const token = await this.jwtService.signAsync(payload);

@@ -1,8 +1,8 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { User } from 'src/users/users.entity';
+import { AuthUser } from '../strategies/jwt.strategy';
 
 export const CurrentUser = createParamDecorator(
-  (data: unknown, ctx: ExecutionContext): User => {
+  (data: unknown, ctx: ExecutionContext): AuthUser => {
     // 从请求对象中获取用户信息
     const request = ctx.switchToHttp().getRequest();
 

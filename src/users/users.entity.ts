@@ -34,6 +34,13 @@ export class User {
   password: string;
 
   @Column({
+    type: 'varchar',
+    length: 20,
+    default: 'user',
+  })
+  role: string;
+
+  @Column({
     type: 'text',
     nullable: true,
   })
