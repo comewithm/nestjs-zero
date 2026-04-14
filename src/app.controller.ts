@@ -2,7 +2,10 @@ import {
   ArgumentMetadata,
   BadRequestException,
   Controller,
+  Get,
+  Param,
   PipeTransform,
+  Query,
 } from '@nestjs/common';
 import { AppService } from './app.service';
 
@@ -145,4 +148,29 @@ class RangeValidationPipe implements PipeTransform {
 @Controller('')
 export class AppController {
   constructor(private readonly appService: AppService) {}
+
+  @Get('learn/pipes/username/:username')
+  demoUsernameLow(@Param('username', UsernameValidationPipe) username: string) {
+    return {
+      step: 'low',
+      username,
+      note: '已绑定 UsernameValidationPipe'
+    }
+  }
+
+  @Get('learn/pipes/page')
+  queryParams(
+    @Query('page', new RangeValidationPipe(1, 100)) page: number | undefined
+  ) {
+    return {
+      step: 'page',
+      page,
+      note: '已绑定 RangeValidationPipe'
+    }
+  }
+
+  @Get('learn/errors/raw')
+  demoRawError() {
+    throw new Error('非 Http 异常错误')
+  }
 }
