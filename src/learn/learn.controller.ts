@@ -3,14 +3,18 @@ import {
   BadRequestException,
   Controller,
   Get,
+  NotFoundException,
   Param,
   PipeTransform,
   Query,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
+import { LoggingInterceptor } from 'src/common/interceptors/logging.interceptor';
+import { FeatureFlagsService } from 'src/feature-flags/feature-flags.service';
 
 class UsernameValidationPipe implements PipeTransform {
   transform(value: any, metadata: ArgumentMetadata) {
@@ -57,6 +61,8 @@ class RangeValidationPipe implements PipeTransform {
 
 @Controller('learn')
 export class LearnController {
+  constructor(private readonly featureFlagsService: FeatureFlagsService) {}
+
   @Get('pipes/username/:username')
   demoUsernameLow(@Param('username', UsernameValidationPipe) username: string) {
     return {
@@ -67,6 +73,7 @@ export class LearnController {
   }
 
   @Get('pipes/page')
+  @UseInterceptors(LoggingInterceptor)
   queryParams(
     @Query('page', new RangeValidationPipe(1, 100)) page: number | undefined,
   ) {
@@ -86,6 +93,9 @@ export class LearnController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
   adminOnly() {
+    if (!this.featureFlagsService.isLearnAdminOnlyEnabled()) {
+      throw new NotFoundException('Not Found');
+    }
     return {
       ok: true,
       message: '你是 admin, 可以访问这个路由',

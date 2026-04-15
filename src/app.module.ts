@@ -12,6 +12,7 @@ import { ProfileModule } from './profiles/profiles.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
 import { LearnController } from './learn/learn.controller';
+import { FeatureFlagsModule } from './feature-flags/feature-flags.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { LearnController } from './learn/learn.controller';
       isGlobal: true,
       envFilePath: '.env',
     }),
+    FeatureFlagsModule.forRootAsync(),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
